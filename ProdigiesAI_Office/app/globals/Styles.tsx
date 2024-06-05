@@ -1,3 +1,5 @@
+import {  StyleSheet } from 'react-native';
+
 /* fonts */
 export const FontFamily = {
   bodyXlarge: "Urbanist-Bold",
@@ -66,3 +68,27 @@ export const Border = {
   br_31xl: 50,
   br_81xl: 100,
 };
+
+
+
+
+
+
+
+export const light_styles = StyleSheet.create({
+  themeContainer: {
+    backgroundColor: Color.white,
+  },
+  themeText: {
+    color: Color.black,
+  },
+});
+
+export const dark_styles = StyleSheet.create({
+  themeContainer: {
+    backgroundColor: Color.black,
+  },
+  themeText: {
+    color: Color.white,
+  },
+});

@@ -6,7 +6,7 @@ import { FontFamily, FontSize, Color, Padding, Border } from "@/globals/Styles";
 import { Products } from '@/services/Products';
 import NavigationBar from '@/components/NavigationBar';
 import { AntDesign } from '@expo/vector-icons';
-import { Item, Category } from '@/interfaces/Category';
+import { Item, Category } from '@/interfaces/CategoryProps';
 import { getRandomText, getRandomDate } from '@/utils/helpers';
 import FlatListMenu from '@/components/FlatListMenu';
 import Line from '@/components/line';
@@ -23,6 +23,7 @@ const Index: React.FC = () => {
     const { translate, isReady } = useTranslation();
     // Adjusted for correct property based on provided interfaces
     const filtered = React.useMemo(() => Products.filter((category: Category) => selectedCategory === 'All' || category.category === selectedCategory), [selectedCategory]);
+
 
 
     useEffect(() => {

@@ -33,25 +33,16 @@ const Account = () => {
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: translate("AIAssistants"),
+      title: translate("Account"),
       headerBackVisible: false,
       headerLeft: () => (
         <TouchableOpacity
           style={styles.settingsButton}
           onPress={() => router.back()}
         >
-          <AntDesign name="arrowleft" size={24} color={Color.primaryColor} />
+          <AntDesign name="left" size={24} color={Color.greyscale700} />
         </TouchableOpacity>
       ),
-      headerRight: () => (
-        <TouchableOpacity
-          style={styles.settingsButton}
-          onPress={() => router.replace('../screens/Menu')}
-        >
-          <AntDesign name="setting" size={24} color={Color.primaryColor} />
-        </TouchableOpacity>
-      ),
-
     });
   }, [navigation, isReady, translate]);
 

@@ -1,4 +1,4 @@
-import { Category } from "@/interfaces/Category";
+import { Category } from "@/interfaces/CategoryProps";
 
 export const Products: Category[] = [
     {

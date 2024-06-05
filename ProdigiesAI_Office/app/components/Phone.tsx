@@ -32,7 +32,7 @@ const Phone: React.FC<PhoneProps> = ({ label = "", value, onChange }) => {
           value={value}
           onChangeText={onChange}
         />
-        <AntDesign name="phone" size={24} color={Color.greyscale700} />
+        <AntDesign name="phone" size={24} color={Color.greyscale700} style={styles.icon} />
       </View>
       </View>
   )

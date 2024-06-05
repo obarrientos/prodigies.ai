@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import Button from "@/components/Button";
-import Switch from "@/components/Switch";
+import Switch from "@/components/useSwitch";
 import { FontFamily, FontSize, Color, Padding, Border } from "@/globals/Styles";
 import useTranslation from "@/hooks/useTranslation"; 
 import { AntDesign, Ionicons } from '@expo/vector-icons';
@@ -60,7 +60,7 @@ const Security: React.FC = () => {
         <View key={setting.id} style={styles.row}>
           {/* <Ionicons name="eye-outline" size={24} color={Color.greyscale700} /> */}
           <Text style={styles.sectionTitle}>{setting.title}</Text>
-          <Switch onPress={() =>toggleSwitch(setting.id)}/>
+          <Switch onToggle={() =>toggleSwitch(setting.id)} value={false}/>
         </View>
       ))}
 

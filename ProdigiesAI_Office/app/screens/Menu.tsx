@@ -3,24 +3,27 @@ import { ScrollView, Text, StyleSheet, Image, View, TouchableOpacity } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRouter } from 'expo-router';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { FontFamily, FontSize, Color, Padding, Border } from "@/globals/Styles";
+import { FontFamily, FontSize, Color, Padding, Border, light_styles, dark_styles } from "@/globals/Styles";
 import useTranslation from "@/hooks/useTranslation"; 
-import Switch from "@/components/Switch";
+import Switch from "@/components/useSwitch";
 import Line from '@/components/line';
-import { signOutUser } from '@/services/Firebase'; // Adjust the import path according to where your Firebase setup is
+import { signOutUser } from '@/services/Firebase'; 
+import { useTheme } from '@/providers/ThemeProvider'; 
+
 
 const Menu = () => {
   const navigation = useNavigation();
-  const router = useRouter();
+  const router = useRouter(); 
   const { translate, isReady } = useTranslation();
+  const { theme, toggleTheme } = useTheme(); 
 
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const themeStyles = theme === 'light' ? light_styles : dark_styles;
+  const isDarkMode = theme === 'dark';
 
   const handleSignOut = async () => {
     await signOutUser();
     router.push(require('@/auth/Welcome'));
-    // Handle post-sign-out logic here, like redirecting to a sign-in screen
+   
   };
 
   useEffect(() => {
@@ -39,11 +42,11 @@ const Menu = () => {
     });
   },[navigation, isReady, translate]);
 
-  return (
-    <ScrollView style={styles.container}>
 
-      <TouchableOpacity style={styles.row} onPress={() => { }}>
-        {/* <Image style={styles.avatar} source={require("@/assets/Iconly/Regular/Outline/Avatar.png")} /> */}
+  return (
+    <ScrollView style={[styles.container,themeStyles.themeContainer]}>
+
+      <TouchableOpacity style={styles.row} onPress={() => { }}>     
         <View style={styles.userInfo}>
           <Text style={styles.username}>Prodigies AI</Text>
           <Text style={styles.email}>support@prodigies.ai</Text>
@@ -82,15 +85,14 @@ const Menu = () => {
         <Text style={styles.sectionDescription}>English (US)</Text>
         <AntDesign name="right" size={24} color="black" />
       </TouchableOpacity>
-      {/* <TouchableOpacity style={styles.row} onPress={() => { }}> */}
+
       <View style={styles.row}>
-        {/* <Image style={styles.sectionIcon} source={require("@/assets/Iconly/Regular/Outline/Show.png")} /> */}
         <Ionicons name="eye-outline" size={24} color={Color.greyscale700} />
         <Text style={styles.sectionTitle}>Dark Mode</Text>
         <View style={styles.SwitchPosition}>
-          <Switch  onPress={toggleSwitch}  />
+          <Switch onToggle={toggleTheme} value={isDarkMode} />
         </View>
-        {/* </TouchableOpacity> */}
+
       </View>
       <View style={styles.elementssectionDividerDark}>
         <Text style={styles.title}>About</Text>
@@ -107,7 +109,7 @@ const Menu = () => {
         <AntDesign name="right" size={24} color="black" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.row} onPress={() => { }}>
-        {/* <Image style={styles.sectionIcon} source={require("@/assets/Iconly/Regular/Outline/InfoSquare.png")} /> */}
+       
         <Ionicons name="information-circle-outline" size={24} color={Color.greyscale700} />
         <Text style={styles.sectionTitle}>About ProdigiesAI</Text>
         <AntDesign name="right" size={24} color="black" />
@@ -115,7 +117,7 @@ const Menu = () => {
       <TouchableOpacity style={styles.row} onPress={() => { router.push('../screens/Languages') }}>
         <Ionicons name="language" size={24} color={Color.greyscale700} />
         <Text style={styles.sectionTitle}>Version</Text>
-        <Text style={styles.sectionDescription}>1.0</Text>
+        <Text style={styles.sectionDescription}>1.0.0</Text>
 
       </TouchableOpacity>
       <TouchableOpacity style={styles.row} onPress={handleSignOut}>
@@ -130,11 +132,11 @@ const Menu = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: Padding.p_base, // Use global padding
-    backgroundColor: Color.white, // Use global color
+    paddingHorizontal: Padding.p_base, 
+
   },
   settingsText: {
-    fontSize: FontSize.bodyLarge, // Use global font size
+    fontSize: FontSize.bodyLarge, 
     fontWeight: "bold",
     flex: 1,
   },
@@ -145,30 +147,30 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15, // Use global padding
+    paddingVertical: 15, 
 
   },
   avatar: {
     width: 80,
     height: 80,
-    borderRadius: Border.br_81xl, // Use global border radius
+    borderRadius: Border.br_81xl, 
   },
   userInfo: {
-    marginLeft: Padding.p_base, // Use global padding
+    marginLeft: Padding.p_base, 
     flex: 1,
   },
   username: {
-    fontSize: FontSize.h5_size, // Use global font size
-    fontWeight: "bold", // Assume you meant to use the font weight here
-    color: Color.greyscale900, // Use global color
+    fontSize: FontSize.h5_size, 
+    fontWeight: "bold", 
+    color: Color.greyscale900, 
   },
   email: {
-    fontSize: FontSize.bodyMedium_size, // Use global font size
-    color: Color.greyscale700, // Use global color
+    fontSize: FontSize.bodyMedium_size,
+    color: Color.greyscale700, 
   },
   upgradeSection: {
-    marginTop: Padding.p_5xs, // Use global padding
-    borderRadius: Border.br_base, // Use global border radius
+    marginTop: Padding.p_5xs, 
+    borderRadius: Border.br_base, 
     overflow: "hidden",
   },
   groupIcon: {
@@ -176,34 +178,34 @@ const styles = StyleSheet.create({
     height: 80,
   },
   upgradeInfo: {
-    marginLeft: Padding.p_base, // Use global padding
+    marginLeft: Padding.p_base, 
     flex: 1,
     height: 70,
   },
   upgradeText: {
-    fontSize: FontSize.h5_size, // Use global font size
+    fontSize: FontSize.h5_size,
     fontWeight: "bold",
-    color: Color.white, // Use global color
+    color: Color.white,
   },
   benefitText: {
-    marginTop: Padding.p_5xs, // Use global padding
-    fontSize: FontSize.bodySmall_size, // Use global font size
-    color: Color.colorWhitesmoke_100, // Use global color
+    marginTop: Padding.p_5xs, 
+    fontSize: FontSize.bodySmall_size, 
+    color: Color.colorWhitesmoke_100,
   },
   elementsSettings: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: Padding.p_base, // Use global padding
-    borderBottomColor: Color.primaryMain100, // Use global color
+    paddingVertical: Padding.p_base, 
+    borderBottomColor: Color.primaryMain100, 
     height: 60,
   },
   sectionIcon: {
     width: 24,
     height: 24,
-    marginRight: Padding.p_base, // Use global padding
+    marginRight: Padding.p_base, 
   },
   sectionTitle: {
-    fontSize: FontSize.bodyLarge, // Use global font size
+    fontSize: FontSize.bodyLarge, 
     fontWeight: 'bold',
     flex: 1,
     color: Color.greyscale700,
@@ -214,8 +216,8 @@ const styles = StyleSheet.create({
   },
 
   sectionDescription: {
-    marginRight: Padding.p_base, // Use global padding
-    fontSize: FontSize.bodyLarge, // Use global font size
+    marginRight: Padding.p_base, 
+    fontSize: FontSize.bodyLarge, 
   },
   iconlyregularoutlinearrow: {
     width: 24,
@@ -223,15 +225,15 @@ const styles = StyleSheet.create({
     display: "none"
   },
   title: {
-    fontSize: FontSize.bodyMedium_size, // Use global font size
-    color: Color.greyscale500, // Use global color
-    marginLeft: Padding.p_base, // Use global padding
+    fontSize: FontSize.bodyMedium_size, 
+    color: Color.greyscale500, 
+    marginLeft: Padding.p_base, 
   },
   darkfalseComponentdividerIcon: {
     maxWidth: "100%",
     overflow: "hidden",
     maxHeight: "100%",
-    marginLeft: Padding.p_base, // Use global padding
+    marginLeft: Padding.p_base, 
     flex: 1
   },
   elementssectionDividerDark: {

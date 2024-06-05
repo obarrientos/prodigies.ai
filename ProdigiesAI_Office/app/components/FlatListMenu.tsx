@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from "react-native";
 import { Padding, Border, FontSize, Color, FontFamily } from "@/globals/Styles";
-import { Category } from '@/interfaces/Category';
+import { Category } from '@/interfaces/CategoryProps';
 // Assuming your categories prop will be an array of ItemCategory objects
 interface Props {
     categories: Category[]; // Corrected type based on your provided structure

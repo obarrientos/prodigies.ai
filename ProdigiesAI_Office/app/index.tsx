@@ -3,24 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { Redirect } from 'expo-router';
 import { initializeAppSettings } from '@/services/Locales';
-import { getAuth,onAuthStateChanged,User} from '@/services/Firebase';
+import { auth} from '@/services/Firebase';
+import { ThemeProvider } from '@/providers/ThemeProvider';
+
 
 export default function Page() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // Add a loading stat    
+
   
   initializeAppSettings();
-
-
-  useEffect(() => {
-    const auth = getAuth(); // Invoking the getter from your Firebase bootstrapping.
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const [fontsLoaded] = useFonts({
     'Urbanist-Medium': require('./assets/fonts/Urbanist-Medium.ttf'),
@@ -34,16 +24,11 @@ export default function Page() {
     return null; // Or a loading indicator
   }
   // console.log(auth);
+
+  return (
+    <ThemeProvider>
+      {auth ? <Redirect href="/screens/Index" /> : <Redirect href="/auth/SignIn" />}
+    </ThemeProvider>
+  );   
   
-  if (loading) {
-    return null; // Or a loading indicator
-  }
-
-  if (currentUser) {
-    return <Redirect href="/screens/Index" />; 
-  } else {
-    return <Redirect href="/auth/Welcome" />; 
-  }
-
-
 }
