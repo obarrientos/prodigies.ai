@@ -1,0 +1,1 @@
+Get-AzLog -ResourceGroupName "MyResourceGroup"
