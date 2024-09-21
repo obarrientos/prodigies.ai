@@ -1,1 +1,0 @@
-kubectl create secret generic <secret-name> --from-literal=<key>=<value> --from-file=<filename>
