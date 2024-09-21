@@ -1,0 +1,44 @@
+# artifactory-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artifactory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artifactory
+  template:
+    metadata:
+      labels:
+        app: artifactory
+    spec:
+      containers:
+      - name: artifactory
+        image: obarrientos1980/artifactory-oss:latest
+        ports:
+        - containerPort: 8081
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: artifactory-data
+          mountPath: /var/opt/jfrog/artifactory
+      volumes:
+      - name: artifactory-data
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artifactory-service
+spec:
+  selector:
+    app: artifactory
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: NodePort

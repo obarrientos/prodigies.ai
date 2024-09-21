@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver-express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlserver-express
+  template:
+    metadata:
+      labels:
+        app: sqlserver-express
+    spec:
+      containers:
+      - name: sqlserver-express
+        image: your-dockerhub-username/sqlserver-express:v1 # Replace with your image name
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: "P@ssw0rd123!"  # Replace with your strong password
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1"
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlserver-express
+spec:
+  selector:
+    app: sqlserver-express
+  ports:
+  - protocol: TCP
+    port: 1433
+    targetPort: 1433
+  type: LoadBalancer
