@@ -1,3 +1,6 @@
+# Start/Stop VM
+# Start-AzVM -ResourceGroupName 'BackOffice_ResourceGroup' -Name 'BackOffice-VM'
+# Stop-AzVM -ResourceGroupName 'BackOffice_ResourceGroup' -Name 'BackOffice-VM'
 # Variables
 $resourceGroup = "BackOffice_ResourceGroup"
 $location = "EastUS2"
@@ -19,13 +22,27 @@ $vmDiskSize = "30"
 $vmDiskaccountType = "Standard_LRS"
 $tags += @{Servers="Virtual Machine"}
 
+Write-Verbose "Creating BackOffice Resource Group..."
+New-AzResourceGroup -Name $resourceGroup  -Location $location
+
+
 # 6. Create Network Security Group for Private VM (BackOffice-VM)
 Write-Verbose "Creating Network Security Group for Private VM..."
 $nsgPrivate = New-AzNetworkSecurityGroup -ResourceGroupName $resourceGroup -Location $location -Name $nsgNamePrivate -Force
 
+# 5. Add Inbound Rules to Allow SSH and HTTP/HTTPS Traffic on the Public VM (ProdigiesAI-VM)
+Write-Verbose "Adding security rules to NSG for Public-facing VM..."
+$nsgRuleSSH = New-AzNetworkSecurityRuleConfig -Name "Allow-SSH" -Description "Allow SSH" -Access Allow -Protocol Tcp -Direction Inbound -Priority 100 -SourceAddressPrefix "*" -SourcePortRange "*" -DestinationAddressPrefix "*" -DestinationPortRange 22
+
+# Apply the rules to the NSG for Public VM
+$nsgPublic.SecurityRules.Add($nsgRuleSSH)
+Set-AzNetworkSecurityGroup -NetworkSecurityGroup $nsgPublic
+
+
 # 7. Add a Rule to Allow Only Subnet Traffic to the Private VM (BackOffice-VM)
 Write-Verbose "Adding subnet access rule to NSG for Private VM..."
 $nsgRuleSubnetAccess = New-AzNetworkSecurityRuleConfig -Name "Allow-Subnet-Access" -Description "Allow Subnet Access" -Access Allow -Protocol Tcp -Direction Inbound -Priority 100 -SourceAddressPrefix "VirtualNetwork" -SourcePortRange "*" -DestinationAddressPrefix "*" -DestinationPortRange "*"
+
 
 # Apply the rule to the NSG for Private VM
 $nsgPrivate.SecurityRules.Add($nsgRuleSubnetAccess)

@@ -1,3 +1,8 @@
+# Start/Stop VM
+# Start-AzVM -ResourceGroupName 'ProdigiesAI_ResourceGroup' -Name 'ProdigiesAI-VM'
+# Stop-AzVM -ResourceGroupName 'ProdigiesAI_ResourceGroup' -Name 'ProdigiesAI-VM'
+
+
 # Variables
 $resourceGroup = "ProdigiesAI_ResourceGroup"
 $location = "EastUS2"
@@ -21,6 +26,25 @@ $tags += @{Servers="Virtual Machine"}
 
 # Enable verbose output for all subsequent commands
 $VerbosePreference = "Continue"
+
+
+
+# 1. Create ProdigiesAI Resource Group
+Write-Verbose "Creating ProdigiesAI Resource Group..."
+New-AzResourceGroup -Name $resourceGroup -Location $location
+
+
+# 3. Create Virtual Network and Subnet
+Write-Verbose "Creating Virtual Network and Subnet..."        
+$vnet = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $location -Name $vnetName -AddressPrefix "10.0.0.0/16" -Force
+$subnet = Add-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix "10.0.0.0/24" -VirtualNetwork $vnet
+$vnet | Set-AzVirtualNetwork
+
+# 4. Create Public IP Address for Public-facing VM (Zeus-VM)
+# Write-Verbose "Creating Public IP for Public-facing VM..."
+# $publicIp = New-AzPublicIpAddress -ResourceGroupName $resourceGroup -Name $publicIpName -Location $location -AllocationMethod Static -Sku Standard -Force
+$publicIp = Get-AzPublicIpAddress -ResourceGroupName 'ProdigiesAI_ResourceGroup' | Select-Object Name, IpAddress
+
 
 # 4. Create Network Security Group for Public VM (ProdigiesAI-VM)
 Write-Verbose "Creating Network Security Group for Public-facing VM..."
@@ -49,11 +73,6 @@ $UserDataStr = @'
 #!/bin/bash
 sudo apt-get update
 
-# Install NGINX as a reverse proxy
-sudo apt-get install -y nginx
-sudo systemctl start nginx
-sudo systemctl enable nginx
-
 # Install Kubernetes (K3s for lightweight Kubernetes)
 curl -sfL https://get.k3s.io | sh -
 sudo systemctl start k3s
@@ -64,6 +83,12 @@ k3s kubectl get nodes
 
 # Optionally install any other tools needed for managing Kubernetes
 echo "Kubernetes (K3s) is up and running on ProdigiesAI-VM"
+
+# Install NGINX as a reverse proxy
+sudo apt-get install -y nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
 '@
 
 
